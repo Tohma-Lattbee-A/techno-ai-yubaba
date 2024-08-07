@@ -21,41 +21,39 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Change directory to app
-        run: cd techno.ai.yubaba.app
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm ci
-        working-directory: ./techno.ai.yubaba.app
+        run: |
+          cd techno.ai.yubaba.app
+          npm ci
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
           static_site_generator: next
-        working-directory: ./techno.ai.yubaba.app
 
       - name: Restore cache
         uses: actions/cache@v4
         with:
           path: |
-            .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/techno.ai.yubaba.app/package-lock.json') }}-${{ hashFiles('**/techno.ai.yubaba.app/**/*.[jt]s', '**/techno.ai.yubaba.app/**/*.[jt]sx') }}
+            techno.ai.yubaba.app/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('techno.ai.yubaba.app/package-lock.json') }}-${{ hashFiles('techno.ai.yubaba.app/**/*.[jt]s', 'techno.ai.yubaba.app/**/*.[jt]sx') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/techno.ai.yubaba.app/package-lock.json') }}-
+            ${{ runner.os }}-nextjs-${{ hashFiles('techno.ai.yubaba.app/package-lock.json') }}-
 
       - name: Build with Next.js
-        run: npm run build
-        working-directory: ./techno.ai.yubaba.app
+        run: |
+          cd techno.ai.yubaba.app
+          npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./techno.ai.yubaba.app/.next
+          path: techno.ai.yubaba.app/.next
 
   deploy:
     environment:
