@@ -1,9 +1,8 @@
 // @type {import('next').NextConfig} 
 const nextConfig = {
     output: 'export',
-    basePath: '/techno.ai.yubaba',
-    assetPrefix: '/techno.ai.yubaba',
-  }
-  
-  export default nextConfig;
-  
+    basePath: '/techno.ai.yubaba.app',
+    assetPrefix: '/techno.ai.yubaba.app',
+}
+
+export default nextConfig;
