@@ -20,52 +20,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
+      - name: Change directory to app
+        run: cd techno.ai.yubaba.app
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Detect package manager
-        id: detect-package-manager
-        run: |
-          if [ -f "${{ github.workspace }}/yarn.lock" ]; then
-            echo "manager=yarn" >> $GITHUB_ENV
-            echo "command=install" >> $GITHUB_ENV
-            echo "runner=yarn" >> $GITHUB_ENV
-          elif [ -f "${{ github.workspace }}/package-lock.json" ]; then
-            echo "manager=npm" >> $GITHUB_ENV
-            echo "command=ci" >> $GITHUB_ENV
-            echo "runner=npx --no-install" >> $GITHUB_ENV
-          else
-            echo "Unable to determine package manager"
-            exit 1
-          fi
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./techno.ai.yubaba.app
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
           static_site_generator: next
+        working-directory: ./techno.ai.yubaba.app
 
       - name: Restore cache
         uses: actions/cache@v4
         with:
           path: |
             .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/techno.ai.yubaba.app/package-lock.json') }}-${{ hashFiles('**/techno.ai.yubaba.app/**/*.[jt]s', '**/techno.ai.yubaba.app/**/*.[jt]sx') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
-
-      - name: Install dependencies
-        run: ${{ env.manager }} ${{ env.command }}
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/techno.ai.yubaba.app/package-lock.json') }}-
 
       - name: Build with Next.js
-        run: ${{ env.runner }} next build
+        run: npm run build
+        working-directory: ./techno.ai.yubaba.app
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .next
+          path: ./techno.ai.yubaba.app/.next
 
   deploy:
     environment:
