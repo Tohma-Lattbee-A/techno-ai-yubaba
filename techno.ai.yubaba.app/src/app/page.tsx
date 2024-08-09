@@ -1,38 +1,15 @@
 'use client'
 
-import { useState } from 'react';
-import "regenerator-runtime";
-import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+import ChatGPT from './chatGPT';
 
 export default function Home() {
 
-  const {
-    listening,
-    transcript,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-  } = useSpeechRecognition();
-  const [message, setMessage] = useState("");
-
-  const handleClickStart = () => {
-    SpeechRecognition.startListening();
-  };
-
-  const handleClickStop = () => {
-    SpeechRecognition.stopListening;
-    setMessage(transcript);
-    resetTranscript();
-  };
-
-  if (!browserSupportsSpeechRecognition) {
-    return <span>Browser doesn't support speech recognition.</span>;
-  }
 
   return (
-    <div className='overflow-x-hidden text-black'>
-      <p>{message}</p>
-      <button onClick={handleClickStart}>Start</button>
-      <button onClick={handleClickStop}>Stop</button>
+    <div className='w-screen h-screen overflow-x-hidden text-black'>
+      <img className='w-full h-full absolute -z-10 object-cover' src='/yubaba.webp' />
+      <h1>Chat GPT</h1>
+      <ChatGPT/>
     </div>
   );
 }

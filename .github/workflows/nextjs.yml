@@ -1,0 +1,67 @@
+name: Deploy Next.js site to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          cd techno.ai.yubaba.app
+          npm ci
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          static_site_generator: next
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            techno.ai.yubaba.app/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('techno.ai.yubaba.app/package-lock.json') }}-${{ hashFiles('techno.ai.yubaba.app/**/*.[jt]s', 'techno.ai.yubaba.app/**/*.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('techno.ai.yubaba.app/package-lock.json') }}-
+
+      - name: Build with Next.js
+        run: |
+          cd techno.ai.yubaba.app
+          npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: techno.ai.yubaba.app/out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
